@@ -560,8 +560,8 @@ mod tests {
 
         // Define log dependencies
         provider.expect_get_block_logs().returning(move |chain, number| {
-            match (chain.to_string().as_str(), number) {
-                ("1", 10) => Ok(vec![Log {
+            match (chain, number) {
+                (1, 10) => Ok(vec![Log {
                     index: 0,
                     hash: b256(1010),
                     executing_message: Some(ExecutingMessage {
@@ -572,7 +572,7 @@ mod tests {
                         hash: b256(222),
                     }),
                 }]),
-                ("2", 11) => Ok(vec![Log {
+                (2, 11) => Ok(vec![Log {
                     index: 0,
                     hash: b256(1020),
                     executing_message: Some(ExecutingMessage {
@@ -583,7 +583,7 @@ mod tests {
                         hash: b256(333),
                     }),
                 }]),
-                ("3", 20) => Ok(vec![Log {
+                (3, 20) => Ok(vec![Log {
                     index: 0,
                     hash: b256(1030),
                     executing_message: Some(ExecutingMessage {
@@ -600,10 +600,10 @@ mod tests {
 
         // Define block fetch behavior
         provider.expect_get_block().returning(move |chain, number| {
-            match (chain.to_string().as_str(), number) {
-                ("2", 11) => Ok(block11),
-                ("3", 20) => Ok(block20),
-                ("1", 10) => Ok(candidate),
+            match (chain, number) {
+                (2, 11) => Ok(block11),
+                (3, 20) => Ok(block20),
+                (1, 10) => Ok(candidate),
                 _ => panic!("unexpected block lookup: chain={chain} num={number}"),
             }
         });
@@ -650,8 +650,8 @@ mod tests {
 
         // Define log dependencies
         provider.expect_get_block_logs().returning(move |chain, number| {
-            match (chain.to_string().as_str(), number) {
-                ("1", 10) => Ok(vec![Log {
+            match (chain, number) {
+                (1, 10) => Ok(vec![Log {
                     index: 0,
                     hash: b256(1010),
                     executing_message: Some(ExecutingMessage {
@@ -662,7 +662,7 @@ mod tests {
                         hash: b256(222),
                     }),
                 }]),
-                ("2", 11) => Ok(vec![Log {
+                (2, 11) => Ok(vec![Log {
                     index: 0,
                     hash: b256(1020),
                     executing_message: Some(ExecutingMessage {
@@ -673,16 +673,16 @@ mod tests {
                         hash: b256(333),
                     }),
                 }]),
-                ("3", 20) => Ok(vec![]), // No further dependency — traversal ends here
+                (3, 20) => Ok(vec![]), // No further dependency — traversal ends here
                 _ => Ok(vec![]),
             }
         });
 
         // Define block fetch behavior
         provider.expect_get_block().returning(move |chain, number| {
-            match (chain.to_string().as_str(), number) {
-                ("2", 11) => Ok(block11),
-                ("3", 20) => Ok(block20),
+            match (chain, number) {
+                (2, 11) => Ok(block11),
+                (3, 20) => Ok(block20),
                 _ => panic!("unexpected block lookup: chain={chain} num={number}"),
             }
         });
@@ -725,8 +725,8 @@ mod tests {
         // Chain2 block 11 → Chain3 block 20
         // Chain3 block 20 → Chain2 block 11 (cycle here, but no candidate involvement)
         provider.expect_get_block_logs().returning(move |chain, number| {
-            match (chain.to_string().as_str(), number) {
-                ("1", 10) => Ok(vec![Log {
+            match (chain, number) {
+                (1, 10) => Ok(vec![Log {
                     index: 0,
                     hash: b256(1010),
                     executing_message: Some(ExecutingMessage {
@@ -737,7 +737,7 @@ mod tests {
                         hash: b256(222),
                     }),
                 }]),
-                ("2", 11) => Ok(vec![Log {
+                (2, 11) => Ok(vec![Log {
                     index: 0,
                     hash: b256(1020),
                     executing_message: Some(ExecutingMessage {
@@ -748,7 +748,7 @@ mod tests {
                         hash: b256(333),
                     }),
                 }]),
-                ("3", 20) => Ok(vec![Log {
+                (3, 20) => Ok(vec![Log {
                     index: 0,
                     hash: b256(1030),
                     executing_message: Some(ExecutingMessage {
@@ -765,9 +765,9 @@ mod tests {
 
         // Block fetches
         provider.expect_get_block().returning(move |chain, number| {
-            match (chain.to_string().as_str(), number) {
-                ("2", 11) => Ok(block11),
-                ("3", 20) => Ok(block20),
+            match (chain, number) {
+                (2, 11) => Ok(block11),
+                (3, 20) => Ok(block20),
                 _ => panic!("unexpected block lookup"),
             }
         });
